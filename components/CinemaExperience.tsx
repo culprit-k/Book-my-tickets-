@@ -1,7 +1,7 @@
 'use client';
 
 import { Canvas } from "@react-three/fiber";
-import { Html, OrbitControls } from "@react-three/drei";
+import { Html, OrbitControls, RoundedBox } from "@react-three/drei";
 import { Suspense, useMemo, useRef, useState } from "react";
 
 type SeatState = "available" | "selected" | "booked";
@@ -24,14 +24,14 @@ function getYouTubeEmbedUrl(rawUrl: string) {
 }
 
 function Seat({ seat, onSelect }: { seat: SeatData; onSelect: (id: string) => void }) {
-  const color = seat.state === "selected" ? "#f3c66f" : seat.state === "booked" ? "#542f39" : "#176d5b";
+  const color = seat.state === "selected" ? "#f3c66f" : seat.state === "booked" ? "#542f39" : seat.row < 2 ? "#277db5" : seat.row < 5 ? "#167c68" : "#285d91";
   const glow = seat.state === "selected" ? "#b37d2d" : "#000000";
   return <group position={[seat.x, .18 + seat.row * .105, seat.z]} onClick={(e) => { e.stopPropagation(); if (seat.state !== "booked") onSelect(seat.id); }}>
     {/* Upholstered seat base and padded back */}
-    <mesh position={[0, .08, 0]} castShadow receiveShadow><boxGeometry args={[.37, .13, .34]} /><meshStandardMaterial color={color} roughness={.38} metalness={.05} emissive={glow} emissiveIntensity={seat.state === "selected" ? .38 : .04} /></mesh>
-    <mesh position={[0, .29, -.125]} castShadow><boxGeometry args={[.37, .34, .095]} /><meshStandardMaterial color={color} roughness={.42} metalness={.03} emissive={glow} emissiveIntensity={seat.state === "selected" ? .3 : .02} /></mesh>
-    <mesh position={[-.19, .13, .005]} castShadow><boxGeometry args={[.065, .16, .29]} /><meshStandardMaterial color="#252831" roughness={.32} metalness={.42} /></mesh>
-    <mesh position={[.19, .13, .005]} castShadow><boxGeometry args={[.065, .16, .29]} /><meshStandardMaterial color="#252831" roughness={.32} metalness={.42} /></mesh>
+    <RoundedBox position={[0, .08, 0]} args={[.39, .14, .36]} radius={.055} smoothness={4} castShadow receiveShadow><meshStandardMaterial color={color} roughness={.58} metalness={.02} emissive={glow} emissiveIntensity={seat.state === "selected" ? .38 : .015} /></RoundedBox>
+    <RoundedBox position={[0, .29, -.125]} args={[.39, .35, .11]} radius={.055} smoothness={5} castShadow><meshStandardMaterial color={color} roughness={.62} metalness={.015} emissive={glow} emissiveIntensity={seat.state === "selected" ? .3 : .01} /></RoundedBox>
+    <RoundedBox position={[-.2, .13, .005]} args={[.07, .17, .3]} radius={.025} smoothness={3} castShadow><meshStandardMaterial color="#252831" roughness={.3} metalness={.48} /></RoundedBox>
+    <RoundedBox position={[.2, .13, .005]} args={[.07, .17, .3]} radius={.025} smoothness={3} castShadow><meshStandardMaterial color="#252831" roughness={.3} metalness={.48} /></RoundedBox>
     <mesh position={[.19, .22, -.045]}><cylinderGeometry args={[.026, .026, .035, 12]} /><meshStandardMaterial color="#b98d4d" metalness={.8} roughness={.2} /></mesh>
     <mesh position={[0, .018, .12]}><boxGeometry args={[.24, .025, .045]} /><meshStandardMaterial color="#30333b" metalness={.35} roughness={.45} /></mesh>
   </group>;
@@ -102,7 +102,7 @@ function Auditorium({ selected, setSelected }: { selected: string[]; setSelected
     {seats.map(seat => <Seat key={seat.id} seat={seat} onSelect={select} />)}
     {/* Front stage and velvet side curtains */}
     <mesh position={[0, -.02, -.2]}><boxGeometry args={[9.5, .15, .75]} /><meshStandardMaterial color="#44303b" roughness={.8} /></mesh>
-    {[-4.95, 4.95].map(x => <mesh key={x} position={[x, 2.25, -.35]}><boxGeometry args={[.34, 4.4, .65]} /><meshStandardMaterial color="#4c202b" roughness={.95} /></mesh>)}
+    {[-4.95, 4.95].map(x => <group key={x}>{Array.from({ length: 7 }, (_, i) => <mesh key={i} position={[x + (i - 3) * .055, 2.25, -.35]}><boxGeometry args={[.065, 4.4, .65]} /><meshStandardMaterial color={i % 2 ? "#5b2635" : "#351923"} roughness={.98} /></mesh>)}</group>)}
   </group>;
 }
 
@@ -119,19 +119,19 @@ export default function CinemaExperience({ onCheckout }: { onCheckout?: (data: {
     setView(v);
     if (!controls.current) return;
     const positions: Record<string, [number, number, number]> = {
-      Explore: [8.7, 7.1, 10.8], Front: [0, 4.2, 11.7], Back: [0, 7.4, 12.6], Screen: [0, 3.6, 6.7]
+      Explore: [7.5, 6.2, 10.5], Front: [0, 4.1, 6.7], Back: [0, 7.1, 12.1], Screen: [0, 3.4, 1.6]
     };
     controls.current.object.position.set(...positions[v]);
-    controls.current.target.set(0, 1.4, 3.2);
+    controls.current.target.set(0, 1.45, 3.2);
     controls.current.update();
   };
 
   return <div className="cinema-layout">
     <div className="scene-wrap">
       <div className="scene-toolbar"><span className="scene-live"><i/> LIVE 3D AUDITORIUM</span><span>ORBIT · ZOOM · SELECT A SEAT</span></div>
-      <Canvas shadows camera={{ position: [8.7, 7.1, 10.8], fov: 43 }} dpr={[1, 1.7]}>
+      <Canvas shadows camera={{ position: [0, 5.25, 11.7], fov: 43 }} dpr={[1, 1.7]}>
         <Suspense fallback={null}><Auditorium selected={selected} setSelected={setSelected} /></Suspense>
-        <OrbitControls ref={controls} makeDefault target={[0, 1.4, 3.2]} minDistance={4.5} maxDistance={19} maxPolarAngle={Math.PI / 2.01} minPolarAngle={.12} enableDamping dampingFactor={.075} />
+        <OrbitControls ref={controls} makeDefault target={[0, 1.45, 3.2]} minDistance={4.5} maxDistance={19} maxPolarAngle={Math.PI / 2.01} minPolarAngle={.12} enableDamping dampingFactor={.075} />
       </Canvas>
       <div className="scene-bottom"><span>01 / PREMIUM AUDITORIUM</span><span>SCREEN ↑</span><span>128 SEATS</span></div>
       <div className="view-pills">{["Explore", "Front", "Back", "Screen"].map(v => <button className={view === v ? "active" : ""} key={v} onClick={() => setCamera(v)}>{v}</button>)}</div>
