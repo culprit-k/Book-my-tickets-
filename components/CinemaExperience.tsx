@@ -108,7 +108,7 @@ function Auditorium({ selected, setSelected }: { selected: string[]; setSelected
 
 const showtimes = ["10:30 AM", "1:45 PM", "5:20 PM", "8:50 PM"];
 
-export default function CinemaExperience() {
+export default function CinemaExperience({ onCheckout }: { onCheckout?: (data: { seats: string[]; showtime: string; total: number }) => void }) {
   const [selected, setSelected] = useState<string[]>([]);
   const [view, setView] = useState("Explore");
   const [showtime, setShowtime] = useState("5:20 PM");
@@ -149,7 +149,7 @@ export default function CinemaExperience() {
       <div className="legend"><span><i className="available-key"/>Available</span><span><i className="selected-key"/>Selected</span><span><i className="booked-key"/>Unavailable</span></div>
       <div className="selected-list">{sorted.length ? sorted.join(" · ") : "Choose seats in the 3D auditorium"}</div>
       <div className="price-row"><span>Estimated total<small>Premium rows $16 · Standard $12 · Rear $10</small></span><b>${total.toFixed(2)}</b></div>
-      <button className="checkout-button" disabled={!selected.length} onClick={() => window.alert(`Demo selection: Jailer 2 · ${showtime} · ${sorted.join(", ")} · $${total.toFixed(2)}. Real booking and payment are not connected yet.`)}>Review selection <span>↗</span></button>
+      <button className="checkout-button" disabled={!selected.length} onClick={() => onCheckout ? onCheckout({ seats: sorted, showtime, total }) : window.alert(`Demo selection: Jailer 2 · ${showtime} · ${sorted.join(", ")} · ${total.toFixed(2)}. Real booking and payment are not connected yet.`)}>Review selection <span>↗</span></button>
       <p className="demo-disclaimer">Interactive product concept. Showtimes and seat inventory are illustrative; checkout does not reserve or charge tickets.</p>
     </aside>
   </div>;
