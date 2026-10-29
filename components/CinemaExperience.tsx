@@ -63,7 +63,7 @@ export default function CinemaExperience() {
         <OrbitControls ref={controls} makeDefault target={[0,1,2.3]} minDistance={4.5} maxDistance={16} maxPolarAngle={Math.PI/2.03} minPolarAngle={.15} enableDamping dampingFactor={.07}/>
       </Canvas>
       <div className="scene-bottom"><span>SCREEN</span><span>← FRONT OF AUDITORIUM</span><span>BACK ROW →</span></div>
-      <div className="view-pills">{["Explore","Front","Back"].map(v=><button className={view===v?"active":""} key={v} onClick={()=>{setView(v);if(controls.current){const p=v==="Front"?[0,4.5,10]:v==="Back"?[0,7,13]:[7,6.2,9];controls.current.object.position.set(...p);controls.current.target.set(0,1,2.3);controls.current.update();}}}>{v}</button>)}</div>
+      <div className="view-pills">{["Explore","Front","Back"].map(v=><button className={view===v?"active":""} key={v} onClick={()=>{setView(v);if(controls.current){if(v==="Front") controls.current.object.position.set(0,4.5,10); else if(v==="Back") controls.current.object.position.set(0,7,13); else controls.current.object.position.set(7,6.2,9);controls.current.target.set(0,1,2.3);controls.current.update();}}}>{v}</button>)}</div>
     </div>
     <aside className="booking-panel">
       <div className="panel-top"><span className="section-kicker">NOW BOOKING</span><span className="show-badge">DEMO SHOW</span></div>
