@@ -24,6 +24,11 @@ Open `http://localhost:3000`.
 npm run build
 ```
 
+## Enable a trailer video
+1. Copy `.env.example` to `.env.local` for local development, or add `NEXT_PUBLIC_TRAILER_URL` in your deployment provider's environment settings.
+2. Set it to a direct HTTPS URL for an MP4/WebM file you have permission to use. A normal YouTube watch-page URL is not a direct video file URL.
+3. The video is muted, loops, and shows browser controls; users can unmute it. Browsers may still apply autoplay restrictions.
+
 ## Deploy
 1. Import this GitHub repository into Vercel.
 2. Select Next.js as the framework (normally detected automatically).
@@ -31,7 +36,7 @@ npm run build
 
 ## Current limitations — important
 This is a **front-end prototype**, not a live ticketing service:
-- The screen inside the 3D auditorium is a visual placeholder; real trailer playback is not implemented yet.
+- The 3D auditorium screen supports autoplaying a direct MP4/WebM trailer URL through `NEXT_PUBLIC_TRAILER_URL`. Without this setting, it displays a branded placeholder. Video starts muted because browsers commonly block autoplay with sound.
 - Film titles, ratings, showtimes, and seat availability are demo content.
 - Seat selections are not saved or locked in a database.
 - Checkout is not connected to payments and does not create a real booking.
