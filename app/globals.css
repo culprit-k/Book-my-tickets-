@@ -384,3 +384,12 @@ html,body{background:#05060a;color:var(--app-ink)}
 .poster-photo{z-index:0}
 .poster-vignette{z-index:1}
 .poster-topline,.poster-bottom{z-index:3}
+
+
+.scene-chip-controls{position:absolute;z-index:5;right:15px;bottom:44px;display:flex;align-items:center;gap:6px}
+.scene-chip{display:flex;align-items:center;gap:6px;border:1px solid #ffffff1e;background:#080a10d9;color:#e0e2e9;border-radius:22px;padding:7px 10px;font-size:7px;letter-spacing:.02em;box-shadow:0 4px 14px #0006;backdrop-filter:blur(12px);transition:background .2s,border-color .2s,color .2s}
+.scene-chip>span{font-weight:900;font-size:7px;color:#aeb4c4}
+.scene-chip .chip-bulb{font-size:12px}
+.scene-chip.active{background:#f4f1e9;color:#151720;border-color:#fff}
+.scene-chip.active>span{color:#b47e26}
+@media(max-width:760px){.scene-chip-controls{right:8px;bottom:39px;gap:4px}.scene-chip{padding:6px 8px;font-size:6px}.scene-chip .chip-bulb{font-size:10px}}
