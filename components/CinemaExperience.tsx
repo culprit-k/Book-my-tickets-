@@ -8,7 +8,7 @@ type SeatState = "available" | "selected" | "booked";
 type SeatData = { id: string; x: number; z: number; row: number; state: SeatState };
 
 const bookedSeats = new Set(["A4", "A5", "B7", "C3", "C4", "D10", "E8", "F6", "G9", "H2", "H11"]);
-const seatPrice = (row: number) => row < 2 ? 16 : row < 6 ? 12 : 10;
+const seatPrice = (row: number) => row < 2 ? 550 : row < 5 ? 320 : row < 9 ? 240 : 160;
 
 function getYouTubeEmbedUrl(rawUrl: string) {
   try {
@@ -44,18 +44,20 @@ function WallPanel({ position, rotation = 0 }: { position: [number, number, numb
   </group>;
 }
 
-function Auditorium({ selected, setSelected }: { selected: string[]; setSelected: (v: string[]) => void }) {
+function Auditorium({ selected, setSelected, trailerUrl, filmTitle }: { selected: string[]; setSelected: (v: string[]) => void; trailerUrl: string; filmTitle: string }) {
   const seats = useMemo(() => {
     const list: SeatData[] = [];
-    for (let r = 0; r < 8; r++) for (let c = 0; c < 12; c++) {
+    for (let r = 0; r < 12; r++) for (let c = 0; c < 18; c++) {
       const id = `${String.fromCharCode(65 + r)}${c + 1}`;
-      const x = (c - 5.5) * .49 + (c >= 6 ? .32 : -.32);
-      const z = 1.05 + r * .57;
+      const x = (c - 8.5) * .52 + (c >= 9 ? .32 : -.32);
+      const z = 1.05 + r * .50;
       list.push({ id, x, z, row: r, state: bookedSeats.has(id) ? "booked" : selected.includes(id) ? "selected" : "available" });
     }
     return list;
   }, [selected]);
   const select = (id: string) => setSelected(selected.includes(id) ? selected.filter(s => s !== id) : [...selected, id]);
+  const selectedTrailer = trailerUrl || process.env.NEXT_PUBLIC_TRAILER_URL || "https://www.youtube.com/watch?v=FW_PPcr1sPE";
+  const trailerEmbed = getYouTubeEmbedUrl(selectedTrailer);
 
   return <group>
     <color attach="background" args={["#080a10"]} />
@@ -71,8 +73,8 @@ function Auditorium({ selected, setSelected }: { selected: string[]; setSelected
     <mesh position={[0, -.24, 4.2]} receiveShadow><boxGeometry args={[11.7, .12, 11.8]} /><meshStandardMaterial color="#34232b" roughness={.9} /></mesh>
     <mesh position={[0, -.14, 4.4]}><boxGeometry args={[.82, .04, 10.5]} /><meshStandardMaterial color="#171b23" roughness={.9} /></mesh>
     {/* Row risers create a visible stepped auditorium profile */}
-    {Array.from({ length: 8 }, (_, r) => <group key={r} position={[0, r * .105 - .22, 1.32 + r * .57]}>
-      <mesh position={[0, 0, .03]} receiveShadow><boxGeometry args={[11.2, .13, .53]} /><meshStandardMaterial color={r % 2 ? "#28242c" : "#302630"} roughness={.9} /></mesh>
+    {Array.from({ length: 12 }, (_, r) => <group key={r} position={[0, r * .115 - .22, 1.32 + r * .50]}>
+      <mesh position={[0, 0, .03]} receiveShadow><boxGeometry args={[11.2, .13, .47]} /><meshStandardMaterial color={r % 2 ? "#28242c" : "#302630"} roughness={.9} /></mesh>
       <mesh position={[-5.05, .075, .28]}><boxGeometry args={[.045, .025, .35]} /><meshStandardMaterial color="#d8a752" emissive="#a8752c" emissiveIntensity={.8} /></mesh>
       <mesh position={[5.05, .075, .28]}><boxGeometry args={[.045, .025, .35]} /><meshStandardMaterial color="#d8a752" emissive="#a8752c" emissiveIntensity={.8} /></mesh>
     </group>)}
@@ -82,11 +84,9 @@ function Auditorium({ selected, setSelected }: { selected: string[]; setSelected
     <mesh position={[0, 2.45, -.69]}><planeGeometry args={[8.7, 3.78]} /><meshBasicMaterial color="#172538" /></mesh>
     <mesh position={[0, 2.45, -.675]}><planeGeometry args={[8.54, 3.62]} /><meshBasicMaterial color="#23354a" /></mesh>
     <Html position={[0, 2.43, -.65]} center transform distanceFactor={5.7} style={{ pointerEvents: "auto" }}>
-      {process.env.NEXT_PUBLIC_TRAILER_URL ? (
-        getYouTubeEmbedUrl(process.env.NEXT_PUBLIC_TRAILER_URL)
-          ? <iframe className="trailer-video" src={getYouTubeEmbedUrl(process.env.NEXT_PUBLIC_TRAILER_URL)!} title="Movie trailer" allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen />
-          : <video className="trailer-video" src={process.env.NEXT_PUBLIC_TRAILER_URL} autoPlay muted loop playsInline controls preload="metadata" aria-label="Movie trailer playing on the cinema screen" />
-      ) : <div className="trailer-screen"><span className="trailer-stars">✦ C I N E V E R S E · PREMIERE</span><strong className="trailer-title">THE BIG SCREEN<br />FEELS DIFFERENT HERE</strong><span className="trailer-sub">IMMERSIVE CINEMA EXPERIENCE</span></div>}
+      {trailerEmbed
+        ? <iframe className="trailer-video" src={trailerEmbed} title={filmTitle + " official trailer on the theatre screen"} allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen />
+        : <video className="trailer-video" src={selectedTrailer} autoPlay muted loop playsInline controls preload="metadata" aria-label={filmTitle + " trailer playing on the cinema screen"} />}
     </Html>
     {/* Ceiling beams, wall ribs and acoustic panels */}
     <mesh position={[0, 6.2, 4.1]}><boxGeometry args={[13, .35, 13]} /><meshStandardMaterial color="#11131a" roughness={.95} /></mesh>
@@ -98,7 +98,7 @@ function Auditorium({ selected, setSelected }: { selected: string[]; setSelected
     <mesh position={[6.25, 2.7, 4.2]}><boxGeometry args={[.25, 5.6, 13]} /><meshStandardMaterial color="#191a22" roughness={.9} /></mesh>
     <mesh position={[0, 2.8, 10.6]}><boxGeometry args={[12.5, 5.6, .25]} /><meshStandardMaterial color="#171820" roughness={.95} /></mesh>
     {/* Aisle markers and seats */}
-    {Array.from({ length: 10 }, (_, i) => <mesh key={i} position={[-.43, -.01, .2 + i * 1.05]}><boxGeometry args={[.035, .025, .38]} /><meshStandardMaterial color="#d9a650" emissive="#b77d32" emissiveIntensity={1.2} /></mesh>)}
+    {Array.from({ length: 12 }, (_, i) => <mesh key={i} position={[-.43, -.01, .2 + i * .52]}><boxGeometry args={[.035, .025, .32]} /><meshStandardMaterial color="#d9a650" emissive="#b77d32" emissiveIntensity={1.2} /></mesh>)}
     {seats.map(seat => <Seat key={seat.id} seat={seat} onSelect={select} />)}
     {/* Front stage and velvet side curtains */}
     <mesh position={[0, -.02, -.2]}><boxGeometry args={[9.5, .15, .75]} /><meshStandardMaterial color="#44303b" roughness={.8} /></mesh>
@@ -108,13 +108,28 @@ function Auditorium({ selected, setSelected }: { selected: string[]; setSelected
 
 const showtimes = ["10:30 AM", "1:45 PM", "5:20 PM", "8:50 PM"];
 
-export default function CinemaExperience({ onCheckout }: { onCheckout?: (data: { seats: string[]; showtime: string; total: number }) => void }) {
+export default function CinemaExperience({ onCheckout, trailerUrl = "https://www.youtube.com/watch?v=FW_PPcr1sPE", movieTitle = "JAILER 2" }: { onCheckout?: (data: { seats: string[]; showtime: string; total: number }) => void; trailerUrl?: string; movieTitle?: string }) {
   const [selected, setSelected] = useState<string[]>([]);
-  const [view, setView] = useState("Explore");
+  const [view, setView] = useState("Overview");
   const [showtime, setShowtime] = useState("5:20 PM");
+  const [quickCount, setQuickCount] = useState(2);
   const controls = useRef<any>(null);
   const sorted = [...selected].sort();
   const total = selected.reduce((sum, id) => sum + seatPrice(id.charCodeAt(0) - 65), 0);
+  const quickPick = () => {
+    const picked: string[] = [];
+    const rows = [4, 3, 5, 2, 6, 1, 7, 8, 9, 10, 11, 0];
+    const cols = [7, 10, 6, 11, 5, 12, 4, 13, 3, 14, 2, 15, 1, 16, 0, 17, 8, 9];
+    for (const r of rows) {
+      for (const c of cols) {
+        const id = `${String.fromCharCode(65 + r)}${c + 1}`;
+        if (!bookedSeats.has(id) && !picked.includes(id)) picked.push(id);
+        if (picked.length >= quickCount) break;
+      }
+      if (picked.length >= quickCount) break;
+    }
+    setSelected(picked);
+  };
   const setCamera = (v: string) => {
     setView(v);
     if (!controls.current) return;
@@ -130,27 +145,32 @@ export default function CinemaExperience({ onCheckout }: { onCheckout?: (data: {
     <div className="scene-wrap">
       <div className="scene-toolbar"><span className="scene-live"><i/> LIVE 3D AUDITORIUM</span><span>ORBIT · ZOOM · SELECT A SEAT</span></div>
       <Canvas shadows camera={{ position: [0, 5.25, 11.7], fov: 43 }} dpr={[1, 1.7]}>
-        <Suspense fallback={null}><Auditorium selected={selected} setSelected={setSelected} /></Suspense>
+        <Suspense fallback={null}><Auditorium selected={selected} setSelected={setSelected} trailerUrl={trailerUrl} filmTitle={movieTitle} /></Suspense>
         <OrbitControls ref={controls} makeDefault target={[0, 1.45, 3.2]} minDistance={4.5} maxDistance={19} maxPolarAngle={Math.PI / 2.01} minPolarAngle={.12} enableDamping dampingFactor={.075} />
       </Canvas>
-      <div className="scene-bottom"><span>01 / PREMIUM AUDITORIUM</span><span>SCREEN ↑</span><span>128 SEATS</span></div>
-      <div className="view-pills">{["Explore", "Front", "Back", "Screen"].map(v => <button className={view === v ? "active" : ""} key={v} onClick={() => setCamera(v)}>{v}</button>)}</div>
-      <div className="scene-hint"><span>↗</span> SELECT A SEAT DIRECTLY IN THE 3D SCENE</div>
+      <div className="scene-bottom"><span>01 / PREMIUM AUDITORIUM</span><span>SCREEN ↑</span><span>216 SEATS</span></div>
+      <div className="view-pills">{["Overview", "From stage", "Balcony", "Overhead", "Tour"].map(v => <button className={view === v ? "active" : ""} key={v} onClick={() => setCamera(v)}>{v}</button>)}</div>
+      <div className="scene-hint"><span>↗</span> TAP A SEAT · DRAG TO EXPLORE</div>
     </div>
     <aside className="booking-panel">
       <div className="panel-top"><span className="section-kicker">YOUR PRIVATE VIEWING</span><span className="show-badge">PREMIUM</span></div>
-      <h3>Jailer 2</h3><p className="panel-sub">Tamil · Action / Thriller · 2h 18m · Dolby Atmos</p>
+      <h3>{movieTitle}</h3><p className="panel-sub">Movie trailer on screen · Immersive theatre · Dolby Atmos demo</p>
       <div className="cinema-meta-grid"><div><span>FORMAT</span><b>4K LASER</b></div><div><span>AUDIO</span><b>DOLBY ATMOS</b></div><div><span>SCREEN</span><b>IMAX-STYLE</b></div></div>
+      <div className="seat-classes"><div className="seat-classes-title">SEAT CLASSES <span>SELECT IN 3D</span></div>
+        {[{name:"Royal Recliner",price:550,desc:"Most spacious · front rows",tone:"class-gold"},{name:"Balcony",price:320,desc:"Elevated view · center aligned",tone:"class-green"},{name:"Prime",price:240,desc:"Sweet spot for sound & picture",tone:"class-purple"},{name:"Classic",price:160,desc:"Front rows · big screen energy",tone:"class-blue"}].map(tier=><div className="seat-class-row" key={tier.name}><i className={tier.tone}/><span><b>{tier.name}</b><small>{tier.desc}</small></span><strong>₹{tier.price}</strong></div>)}
+      </div>
+      <div className="panel-divider"/>
+      <div className="quick-pick"><div className="quick-pick-count"><small>QUICK PICK</small><div><button onClick={()=>setQuickCount(n=>Math.max(1,n-1))} aria-label="Remove quick pick seat">−</button><b>{quickCount}</b><button onClick={()=>setQuickCount(n=>Math.min(8,n+1))} aria-label="Add quick pick seat">+</button></div></div><button className="best-seats-button" onClick={quickPick}><span>✦</span> Best {quickCount} seats</button></div>
       <div className="panel-divider"/>
       <div className="panel-row"><b>Choose a showtime</b><span>Today · Demo</span></div>
       <div className="showtime-grid">{showtimes.map(t => <button key={t} className={showtime === t ? "active" : ""} onClick={() => setShowtime(t)}>{t}</button>)}</div>
       <div className="panel-divider"/>
       <div className="panel-row"><b>Select your seats</b><span>{selected.length} selected</span></div>
-      <div className="legend"><span><i className="available-key"/>Available</span><span><i className="selected-key"/>Selected</span><span><i className="booked-key"/>Unavailable</span></div>
+      <div className="legend"><span><i className="available-key"/> Available</span><span><i className="selected-key"/> Your pick</span><span><i className="booked-key"/> Booked</span></div>
       <div className="selected-list">{sorted.length ? sorted.join(" · ") : "Choose seats in the 3D auditorium"}</div>
-      <div className="price-row"><span>Estimated total<small>Premium rows $16 · Standard $12 · Rear $10</small></span><b>${total.toFixed(2)}</b></div>
+      <div className="price-row"><span>Estimated total<small>Recliner ₹550 · Balcony ₹320 · Prime ₹240 · Classic ₹160</small></span><b>₹{total.toLocaleString("en-IN")}</b></div>
       <button className="checkout-button" disabled={!selected.length} onClick={() => onCheckout ? onCheckout({ seats: sorted, showtime, total }) : window.alert(`Demo selection: Jailer 2 · ${showtime} · ${sorted.join(", ")} · ${total.toFixed(2)}. Real booking and payment are not connected yet.`)}>Review selection <span>↗</span></button>
-      <p className="demo-disclaimer">Interactive product concept. Showtimes and seat inventory are illustrative; checkout does not reserve or charge tickets.</p>
+      <p className="demo-disclaimer">Prototype mode · Seats, showtimes, and prices are illustrative. No reservation or payment is made.</p>
     </aside>
   </div>;
 }
