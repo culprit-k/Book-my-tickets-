@@ -44,7 +44,7 @@ function WallPanel({ position, rotation = 0 }: { position: [number, number, numb
   </group>;
 }
 
-function Auditorium({ selected, setSelected, trailerUrl, filmTitle }: { selected: string[]; setSelected: (v: string[]) => void; trailerUrl: string; filmTitle: string }) {
+function Auditorium({ selected, setSelected, trailerUrl, filmTitle, houseLights }: { selected: string[]; setSelected: (v: string[]) => void; trailerUrl: string; filmTitle: string; houseLights: boolean }) {
   const seats = useMemo(() => {
     const list: SeatData[] = [];
     for (let r = 0; r < 12; r++) for (let c = 0; c < 18; c++) {
@@ -62,12 +62,12 @@ function Auditorium({ selected, setSelected, trailerUrl, filmTitle }: { selected
   return <group>
     <color attach="background" args={["#080a10"]} />
     <fog attach="fog" args={["#080a10", 13, 27]} />
-    <ambientLight intensity={.62} />
-    <hemisphereLight args={["#9caac4", "#100e12", .75]} />
-    <spotLight position={[0, 9, -3]} angle={.72} penumbra={.7} intensity={105} color="#f8d9a0" castShadow shadow-mapSize={[1024, 1024]} />
-    <spotLight position={[-5, 6, 4]} angle={.7} penumbra={.8} intensity={28} color="#a43c50" />
-    <spotLight position={[5, 6, 4]} angle={.7} penumbra={.8} intensity={30} color="#4669a7" />
-    <pointLight position={[0, 3, -1]} intensity={22} color="#f3bd62" distance={12} />
+    <ambientLight intensity={houseLights ? .88 : .28} />
+    <hemisphereLight args={["#9caac4", "#100e12", houseLights ? 1.05 : .38]} />
+    <spotLight position={[0, 9, -3]} angle={.72} penumbra={.7} intensity={houseLights ? 125 : 105} color="#f8d9a0" castShadow shadow-mapSize={[1024, 1024]} />
+    <spotLight position={[-5, 6, 4]} angle={.7} penumbra={.8} intensity={houseLights ? 44 : 16} color="#a43c50" />
+    <spotLight position={[5, 6, 4]} angle={.7} penumbra={.8} intensity={houseLights ? 46 : 18} color="#4669a7" />
+    <pointLight position={[0, 3, -1]} intensity={houseLights ? 32 : 12} color="#f3bd62" distance={12} />
     {/* Deep room shell, tiered carpet and aisle */}
     <mesh position={[0, -.5, 4.2]} receiveShadow><boxGeometry args={[13, .35, 13]} /><meshStandardMaterial color="#17171e" roughness={.92} /></mesh>
     <mesh position={[0, -.24, 4.2]} receiveShadow><boxGeometry args={[11.7, .12, 11.8]} /><meshStandardMaterial color="#34232b" roughness={.9} /></mesh>
@@ -113,6 +113,8 @@ export default function CinemaExperience({ onCheckout, trailerUrl = "https://www
   const [view, setView] = useState("Overview");
   const [showtime, setShowtime] = useState("5:20 PM");
   const [quickCount, setQuickCount] = useState(2);
+  const [houseLights, setHouseLights] = useState(false);
+  const [hdMode, setHdMode] = useState(true);
   const controls = useRef<any>(null);
   const sorted = [...selected].sort();
   const total = selected.reduce((sum, id) => sum + seatPrice(id.charCodeAt(0) - 65), 0);
@@ -148,13 +150,17 @@ export default function CinemaExperience({ onCheckout, trailerUrl = "https://www
   return <div className="cinema-layout">
     <div className="scene-wrap">
       <div className="scene-toolbar"><span className="scene-live"><i/> LIVE 3D AUDITORIUM</span><span>ORBIT · ZOOM · SELECT A SEAT</span></div>
-      <Canvas shadows camera={{ position: [-8.3, 7.0, 9.5], fov: 43 }} dpr={[1, 1.7]}>
-        <Suspense fallback={null}><Auditorium selected={selected} setSelected={setSelected} trailerUrl={trailerUrl} filmTitle={movieTitle} /></Suspense>
+      <Canvas shadows camera={{ position: [-8.3, 7.0, 9.5], fov: 43 }} dpr={hdMode ? [1.3, 1.8] : [0.8, 1.15]}>
+        <Suspense fallback={null}><Auditorium selected={selected} setSelected={setSelected} trailerUrl={trailerUrl} filmTitle={movieTitle} houseLights={houseLights} /></Suspense>
         <OrbitControls ref={controls} makeDefault target={[0, 1.5, 3.3]} minDistance={4.5} maxDistance={22} maxPolarAngle={Math.PI / 1.95} minPolarAngle={.05} enableDamping dampingFactor={.075} autoRotate={view === "Tour"} autoRotateSpeed={.32} />
       </Canvas>
       <div className="scene-bottom"><span>01 / PREMIUM AUDITORIUM</span><span>SCREEN ↑</span><span>216 SEATS</span></div>
       <div className="view-pills">{["Overview", "From stage", "Balcony", "Overhead", "Tour"].map(v => <button className={view === v ? "active" : ""} key={v} onClick={() => setCamera(v)}>{v}</button>)}</div>
       <div className="scene-hint"><span>↗</span> TAP A SEAT · DRAG TO EXPLORE</div>
+      <div className="scene-chip-controls">
+        <button className={houseLights ? "scene-chip active" : "scene-chip"} onClick={() => setHouseLights(v => !v)}><span className="chip-bulb">{houseLights ? "☼" : "◐"}</span> House lights</button>
+        <button className={hdMode ? "scene-chip active" : "scene-chip"} onClick={() => setHdMode(v => !v)}><span>HD</span> {hdMode ? "Quality" : "Performance"}</button>
+      </div>
     </div>
     <aside className="booking-panel">
       <div className="panel-top"><span className="section-kicker">YOUR PRIVATE VIEWING</span><span className="show-badge">PREMIUM</span></div>
