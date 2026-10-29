@@ -7,3 +7,63 @@
 @media(max-width:600px){.trailer-video{width:240px;height:100px}}
 
 iframe.trailer-video{border:1px solid #536076;border-radius:1px}
+
+
+/* Immersive auditorium upgrade */
+:root{--gold:#efc36f;--line:#2c2d36}
+body{background:radial-gradient(ellipse at 50% -20%,#20202a 0%,#0b0c10 48%);background-attachment:fixed}
+.topbar{position:sticky;top:0;z-index:20;background:#0b0c10d9;backdrop-filter:blur(18px);border-bottom-color:#ffffff15}
+.brand-mark{box-shadow:0 0 24px #e9b85c15}
+.hero{min-height:620px}
+.hero-art{height:420px;box-shadow:0 24px 80px #0008,inset 0 0 60px #d8a44a0b;background:radial-gradient(ellipse at 50% 32%,#303342 0%,#171821 45%,#090a0e 100%)}
+.hero-screen{box-shadow:0 0 0 1px #e4bd7033,0 0 48px #e0b45b26;transform:perspective(650px) rotateX(-3deg)}
+.seat-wave{bottom:30px;filter:drop-shadow(0 14px 14px #0009)}
+.seat-row{transform:rotateX(22deg) scaleX(.9)}
+.movie-strip{gap:22px}
+.movie-card{transition:transform .35s ease}
+.movie-card:hover{transform:translateY(-5px)}
+.poster{height:265px;border-radius:11px;box-shadow:0 12px 32px #0002;transition:border-color .25s,transform .25s}
+.poster:hover{border-color:#e9b85c77}
+.poster-one{background:radial-gradient(ellipse at 50% 25%,#c9975b 0%,#60302f 35%,#211a25 70%,#101116 100%)}
+.poster-two{background:radial-gradient(ellipse at 70% 28%,#9eb2b8 0%,#435e69 34%,#202a38 68%,#101116 100%)}
+.poster-three{background:radial-gradient(ellipse at 45% 25%,#b59cc4 0%,#55426c 35%,#2a263f 67%,#101116 100%)}
+.experience-section{padding-top:28px}
+.experience-heading{margin-bottom:30px}
+.cinema-layout{grid-template-columns:minmax(0,1.75fr) minmax(300px,.72fr);gap:20px;align-items:stretch}
+.scene-wrap{height:690px;border-radius:13px;border-color:#34333c;background:radial-gradient(ellipse at 50% 20%,#25212b,#090a0e 75%);box-shadow:0 24px 80px #0006,inset 0 0 55px #d4a34a08}
+.scene-wrap:after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;box-shadow:inset 0 0 70px #0007}
+.scene-wrap canvas{position:relative;z-index:1}
+.scene-toolbar,.scene-bottom{z-index:4;letter-spacing:.16em;font-size:9px}
+.scene-toolbar{top:20px}
+.scene-bottom{bottom:20px}
+.scene-live{color:#f3e5c9}
+.scene-live i{box-shadow:0 0 14px #57c5a2}
+.view-pills{z-index:5;top:52px;right:18px;gap:3px;padding:5px;border-radius:9px;background:#08090dd9;backdrop-filter:blur(12px)}
+.view-pills button{padding:8px 11px;border-radius:5px;transition:background .2s,color .2s}
+.scene-hint{position:absolute;z-index:4;left:18px;bottom:48px;font-size:8px;letter-spacing:.11em;color:#bfc1c9;background:#0a0b10c9;border:1px solid #ffffff17;padding:9px 12px;border-radius:6px;pointer-events:none}
+.scene-hint span{color:var(--gold);margin-right:7px}
+.booking-panel{padding:26px;border-radius:13px;background:linear-gradient(155deg,#1a1b23f2,#101116f7 65%);box-shadow:0 24px 80px #0004}
+.booking-panel h3{font-size:30px;letter-spacing:-.045em}
+.show-badge{border-color:#8c6d37;color:#f0cb7c;background:#d3a6530c;letter-spacing:.1em}
+.cinema-meta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:20px}
+.cinema-meta-grid>div{padding:10px 8px;border:1px solid #ffffff12;background:#ffffff04;border-radius:6px}
+.cinema-meta-grid span,.cinema-meta-grid b{display:block}
+.cinema-meta-grid span{font-size:7px;letter-spacing:.12em;color:#818591;margin-bottom:6px}
+.cinema-meta-grid b{font-size:8px;letter-spacing:.04em;color:#e0d9ca}
+.showtime-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:13px}
+.showtime-grid button{padding:10px 7px;border-radius:6px;border:1px solid #343640;background:#0d0e13;color:#c5c6ce;font-size:10px;transition:all .2s}
+.showtime-grid button:hover{border-color:#b68b45;color:#fff}
+.showtime-grid button.active{background:#e9b85c;color:#18130b;border-color:#e9b85c;font-weight:800;box-shadow:0 5px 18px #e9b85c20}
+.panel-divider{margin:19px 0}
+.selected-list{background:#0b0c10;border-color:#34353d;min-height:48px}
+.price-row{margin:24px 0 18px}
+.checkout-button{border-radius:7px;box-shadow:0 7px 22px #e9b85c16;transition:transform .2s,box-shadow .2s}
+.checkout-button:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 10px 28px #e9b85c2b}
+.demo-disclaimer{font-size:9px}
+.how-section{position:relative}
+.steps article{transition:transform .25s,border-color .25s,background .25s}
+.steps article:hover{transform:translateY(-4px);border-color:#66502f;background:#15151b}
+footer{padding-top:30px}
+@media(max-width:1100px){.cinema-layout{grid-template-columns:minmax(0,1.4fr) minmax(285px,.8fr)}.scene-wrap{height:610px}.booking-panel{padding:20px}}
+@media(max-width:950px){.hero-art{height:350px}.cinema-layout{grid-template-columns:1fr}.scene-wrap{height:560px}.booking-panel{min-height:unset}.movie-strip{gap:14px}}
+@media(max-width:600px){.hero-art{height:260px}.poster{height:185px}.scene-wrap{height:430px}.scene-toolbar{font-size:7px}.scene-bottom{font-size:6px}.scene-hint{left:10px;bottom:43px;font-size:7px;padding:7px}.view-pills{right:8px;top:39px}.view-pills button{font-size:7px;padding:7px 8px}.cinema-meta-grid b{font-size:7px}.booking-panel{padding:18px 15px}.showtime-grid button{font-size:9px}.experience-section{padding-top:15px}}
