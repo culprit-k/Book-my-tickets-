@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from "react";
-import { Bell, ChevronLeft, ChevronRight, Clapperboard, Clock3, Compass, CreditCard, Film, Home, MapPin, Minus, Plus, ShieldCheck, Ticket, UserRound, Wallet } from "lucide-react";
+import { Bell, ChevronLeft, ChevronRight, Clapperboard, Clock3, Compass, CreditCard, Film, Home as HomeIcon, MapPin, Minus, Plus, ShieldCheck, Ticket, UserRound, Wallet } from "lucide-react";
 import CinemaExperience from "@/components/CinemaExperience";
 
 type Movie = { title: string; language: string; genre: string; duration: string; rating: string; art: string; accent: string; synopsis: string };
@@ -24,7 +24,7 @@ function Poster({ movie, large = false, onClick }: { movie: Movie; large?: boole
 }
 
 function BottomNav({ active, setActive }: { active: string; setActive: (v: string) => void }) {
-  const items = [{ id: "home", label: "Home", icon: Home }, { id: "tickets", label: "My tickets", icon: Ticket }, { id: "account", label: "Profile", icon: UserRound }];
+  const items = [{ id: "home", label: "Home", icon: HomeIcon }, { id: "tickets", label: "My tickets", icon: Ticket }, { id: "account", label: "Profile", icon: UserRound }];
   return <nav className="bottom-nav">{items.map(item => { const Icon = item.icon; return <button key={item.id} className={active === item.id ? "nav-active" : ""} onClick={() => setActive(item.id)}><Icon size={19} strokeWidth={active === item.id ? 2.3 : 1.7} /><span>{item.label}</span></button>; })}</nav>;
 }
 
