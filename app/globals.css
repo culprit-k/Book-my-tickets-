@@ -374,3 +374,13 @@ html,body{background:#05060a;color:var(--app-ink)}
   .movie-trailer-info{left:12px;right:12px;gap:8px}
   .movie-trailer-info .detail-poster .poster-large{width:61px;height:88px}
 }
+
+
+/* Keep the live film footage above the hero background and below all legible UI. */
+.movie-trailer-hero{isolation:isolate;background:#020306}
+.movie-trailer-hero .detail-trailer-video{z-index:0}
+.movie-trailer-hero .trailer-gradient{z-index:1}
+.movie-trailer-hero .detail-topline,.movie-trailer-hero .movie-trailer-info,.movie-trailer-hero .trailer-hint{z-index:3}
+.poster-photo{z-index:0}
+.poster-vignette{z-index:1}
+.poster-topline,.poster-bottom{z-index:3}
