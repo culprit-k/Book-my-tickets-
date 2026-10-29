@@ -49,6 +49,13 @@ export default function Home() {
   const [showIntro, setShowIntro] = useState(true);
   const [trailerMuted, setTrailerMuted] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [carouselGap, setCarouselGap] = useState(158);
+  useEffect(() => {
+    const syncCarouselGap = () => setCarouselGap(window.innerWidth < 600 ? 92 : window.innerWidth < 950 ? 124 : 158);
+    syncCarouselGap();
+    window.addEventListener("resize", syncCarouselGap);
+    return () => window.removeEventListener("resize", syncCarouselGap);
+  }, []);
   useEffect(() => {
     const timer = window.setTimeout(() => setShowIntro(false), 2400);
     return () => window.clearTimeout(timer);
@@ -86,7 +93,7 @@ export default function Home() {
     <header className="app-header">
       <button className="app-brand" onClick={() => goTab("home")}><span className="brand-emblem"><Clapperboard size={16} /></span><span>CINE<span>VERSE</span></span></button>
       <nav className="desktop-movie-nav"><button onClick={() => goTab("explore")}>Movies</button><button onClick={() => goTab("explore")}>Events</button><button onClick={() => goTab("explore")}>Plays</button><button onClick={() => goTab("explore")}>Sports</button></nav>
-      <label className="site-search"><Search size={13}/><input aria-label="Search movies" placeholder="Search movies, theatres..." value={searchTerm} onChange={e => { setSearchTerm(e.target.value); setScreen("home"); }} /><span>⌘ K</span></label>
+      <label className="site-search"><Search size={13}/><input aria-label="Search movies" placeholder="Search movies, theatres..." value={searchTerm} onChange={e => { const value = e.target.value; setSearchTerm(value); setScreen("home"); const match = movies.findIndex(item => item.title.toLowerCase().includes(value.trim().toLowerCase())); if (match >= 0) setActiveMovieIndex(match); }} /><span>⌘ K</span></label>
       <div className="header-actions header-actions-wide"><button className="header-tickets" onClick={() => goTab("tickets")}><Ticket size={13}/> My tickets</button><button className="header-location" onClick={() => window.alert("Location selection is a demo. Current showcase city: Chennai.")}><MapPin size={12}/> Chennai <ChevronDown size={12}/></button><button className="header-sign-in" onClick={() => goTab("account")}>Sign in</button></div>
       <div className="header-actions header-actions-mobile"><button aria-label="My tickets" onClick={() => goTab("tickets")}><Ticket size={17}/></button><button className="avatar-button" aria-label="Profile" onClick={() => goTab("account")}><UserRound size={17}/></button></div>
     </header>
@@ -100,7 +107,7 @@ export default function Home() {
             const index = movies.indexOf(item);
             const offset = index - activeMovieIndex;
             const dist = Math.abs(offset);
-            return <div key={item.title} role="button" tabIndex={0} aria-label={`Select ${item.title}`} className={`film-gallery-item ${offset === 0 ? "film-current" : ""}`} style={{transform:`translate(-50%, 0) translateX(${offset * 158}px) translateZ(${offset === 0 ? 45 : -dist * 72}px) rotateY(${offset * -18}deg) scale(${Math.max(.64, 1 - dist * .075)})`,zIndex:30-dist*3,opacity:dist>3?.16:1}} onClick={() => { if (offset === 0) { setMovie(item); setTrailerMuted(true); setScreen("details"); } else setActiveMovieIndex(index); }} onKeyDown={e => { if(e.key==="Enter" || e.key===" ") { e.preventDefault(); setActiveMovieIndex(index); } }}>
+            return <div key={item.title} role="button" tabIndex={0} aria-label={`Select ${item.title}`} className={`film-gallery-item ${offset === 0 ? "film-current" : ""}`} style={{transform:`translate(-50%, 0) translateX(${offset * carouselGap}px) translateZ(${offset === 0 ? 45 : -dist * 72}px) rotateY(${offset * -18}deg) scale(${Math.max(.64, 1 - dist * .075)})`,zIndex:30-dist*3,opacity:dist>3?.16:1}} onClick={() => { if (offset === 0) { setMovie(item); setTrailerMuted(true); setScreen("details"); } else setActiveMovieIndex(index); }} onKeyDown={e => { if(e.key==="Enter" || e.key===" ") { e.preventDefault(); setActiveMovieIndex(index); } }}>
               <div className="film-pedestal"><Poster movie={item}/><div className="film-reflection"><img src={item.posterImage} alt="" draggable={false}/></div></div>
               <div className="film-gallery-label"><span>{item.title}</span><small>{item.language}</small></div>
             </div>;
