@@ -8,7 +8,7 @@ type SeatState = "available" | "selected" | "booked";
 type SeatData = { id: string; x: number; z: number; row: number; state: SeatState };
 
 const bookedSeats = new Set(["A4", "A5", "B7", "C3", "C4", "D10", "E8", "F6", "G9", "H2", "H11"]);
-const seatPrice = (row: number) => row < 2 ? 550 : row < 5 ? 320 : row < 9 ? 240 : 160;
+const seatPrice = (row: number) => row < 3 ? 160 : row < 8 ? 240 : row < 10 ? 320 : 550;
 
 function getYouTubeEmbedUrl(rawUrl: string) {
   try {
@@ -24,7 +24,7 @@ function getYouTubeEmbedUrl(rawUrl: string) {
 }
 
 function Seat({ seat, onSelect }: { seat: SeatData; onSelect: (id: string) => void }) {
-  const color = seat.state === "selected" ? "#f3c66f" : seat.state === "booked" ? "#542f39" : seat.row < 2 ? "#277db5" : seat.row < 5 ? "#167c68" : "#285d91";
+  const color = seat.state === "selected" ? "#f3c66f" : seat.state === "booked" ? "#542f39" : seat.row < 3 ? "#20805e" : seat.row < 8 ? "#286db1" : seat.row < 10 ? "#7452b8" : "#8f632a";
   const glow = seat.state === "selected" ? "#b37d2d" : "#000000";
   return <group position={[seat.x, .18 + seat.row * .105, seat.z]} onClick={(e) => { e.stopPropagation(); if (seat.state !== "booked") onSelect(seat.id); }}>
     {/* Upholstered seat base and padded back */}
@@ -134,7 +134,11 @@ export default function CinemaExperience({ onCheckout, trailerUrl = "https://www
     setView(v);
     if (!controls.current) return;
     const positions: Record<string, [number, number, number]> = {
-      Explore: [7.5, 6.2, 10.5], Front: [0, 4.1, 6.7], Back: [0, 7.1, 12.1], Screen: [0, 3.4, 1.6]
+      Overview: [-8.3, 7.0, 9.5],
+      "From stage": [0, 3.2, 0.8],
+      Balcony: [0, 7.9, 9.2],
+      Overhead: [0, 10.5, 4.0],
+      Tour: [7.2, 6.3, 9.8]
     };
     controls.current.object.position.set(...positions[v]);
     controls.current.target.set(0, 1.45, 3.2);
@@ -144,9 +148,9 @@ export default function CinemaExperience({ onCheckout, trailerUrl = "https://www
   return <div className="cinema-layout">
     <div className="scene-wrap">
       <div className="scene-toolbar"><span className="scene-live"><i/> LIVE 3D AUDITORIUM</span><span>ORBIT · ZOOM · SELECT A SEAT</span></div>
-      <Canvas shadows camera={{ position: [0, 5.25, 11.7], fov: 43 }} dpr={[1, 1.7]}>
+      <Canvas shadows camera={{ position: [-8.3, 7.0, 9.5], fov: 43 }} dpr={[1, 1.7]}>
         <Suspense fallback={null}><Auditorium selected={selected} setSelected={setSelected} trailerUrl={trailerUrl} filmTitle={movieTitle} /></Suspense>
-        <OrbitControls ref={controls} makeDefault target={[0, 1.45, 3.2]} minDistance={4.5} maxDistance={19} maxPolarAngle={Math.PI / 2.01} minPolarAngle={.12} enableDamping dampingFactor={.075} />
+        <OrbitControls ref={controls} makeDefault target={[0, 1.5, 3.3]} minDistance={4.5} maxDistance={22} maxPolarAngle={Math.PI / 1.95} minPolarAngle={.05} enableDamping dampingFactor={.075} autoRotate={view === "Tour"} autoRotateSpeed={.32} />
       </Canvas>
       <div className="scene-bottom"><span>01 / PREMIUM AUDITORIUM</span><span>SCREEN ↑</span><span>216 SEATS</span></div>
       <div className="view-pills">{["Overview", "From stage", "Balcony", "Overhead", "Tour"].map(v => <button className={view === v ? "active" : ""} key={v} onClick={() => setCamera(v)}>{v}</button>)}</div>
@@ -168,8 +172,8 @@ export default function CinemaExperience({ onCheckout, trailerUrl = "https://www
       <div className="panel-row"><b>Select your seats</b><span>{selected.length} selected</span></div>
       <div className="legend"><span><i className="available-key"/> Available</span><span><i className="selected-key"/> Your pick</span><span><i className="booked-key"/> Booked</span></div>
       <div className="selected-list">{sorted.length ? sorted.join(" · ") : "Choose seats in the 3D auditorium"}</div>
-      <div className="price-row"><span>Estimated total<small>Recliner ₹550 · Balcony ₹320 · Prime ₹240 · Classic ₹160</small></span><b>₹{total.toLocaleString("en-IN")}</b></div>
-      <button className="checkout-button" disabled={!selected.length} onClick={() => onCheckout ? onCheckout({ seats: sorted, showtime, total }) : window.alert(`Demo selection: Jailer 2 · ${showtime} · ${sorted.join(", ")} · ${total.toFixed(2)}. Real booking and payment are not connected yet.`)}>Review selection <span>↗</span></button>
+      <div className="price-row"><span>Estimated total<small>Classic ₹160 · Prime ₹240 · Balcony ₹320 · Royal Recliner ₹550</small></span><b>₹{total.toLocaleString("en-IN")}</b></div>
+      <button className="checkout-button" disabled={!selected.length} onClick={() => onCheckout ? onCheckout({ seats: sorted, showtime, total }) : window.alert(`Demo selection: ${movieTitle} · ${showtime} · ${sorted.join(", ")} · ₹${total.toLocaleString("en-IN")}. Real booking and payment are not connected yet.`)}>Review selection <span>↗</span></button>
       <p className="demo-disclaimer">Prototype mode · Seats, showtimes, and prices are illustrative. No reservation or payment is made.</p>
     </aside>
   </div>;
