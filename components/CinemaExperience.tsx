@@ -19,7 +19,7 @@ function getYouTubeEmbedUrl(rawUrl: string) {
       if (url.pathname === "/watch") videoId = url.searchParams.get("v") ?? "";
       else if (url.pathname.startsWith("/embed/") || url.pathname.startsWith("/shorts/")) videoId = url.pathname.split("/")[2] ?? "";
     }
-    return videoId ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&mute=1&controls=1&rel=0&playsinline=1` : null;
+    return videoId ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&mute=1&controls=1&rel=0&playsinline=1&loop=1&playlist=${encodeURIComponent(videoId)}&modestbranding=1` : null;
   } catch { return null; }
 }
 
