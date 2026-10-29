@@ -26,7 +26,7 @@ npm run build
 
 ## Enable a trailer video
 1. Copy `.env.example` to `.env.local` for local development, or add `NEXT_PUBLIC_TRAILER_URL` in your deployment provider's environment settings.
-2. Set it to a direct HTTPS URL for an MP4/WebM file you have permission to use. A normal YouTube watch-page URL is not a direct video file URL.
+2. Set it to a YouTube watch/share URL or a direct HTTPS MP4/WebM URL that you have permission to use. YouTube is embedded using its privacy-enhanced player; direct videos use the browser video player.
 3. The video is muted, loops, and shows browser controls; users can unmute it. Browsers may still apply autoplay restrictions.
 
 ## Deploy
