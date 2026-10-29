@@ -26,7 +26,7 @@ function Poster({ movie, large = false, onClick }: { movie: Movie; large?: boole
     <img className="poster-photo" src={movie.posterImage} alt="" loading="lazy" draggable={false} />
     <span className="poster-vignette" />
     <span className="poster-topline"><span>✦ CINEVERSE ORIGINAL</span><span>4K</span></span>
-    {!movie.posterImage && <span className="poster-artwork">{movie.art === "ramayana" ? <><i className="ramayana-sun" /><i className="ramayana-figure" /><i className="ramayana-bow" /></> : movie.art === "jailer" ? <><i className="jailer-light" /><i className="jailer-figure" /></> : movie.art === "storm" ? <><i className="storm-moon" /><i className="storm-ridge" /></> : <><i className="signal-planet" /><i className="signal-beam" /></>}</span>
+    {!movie.posterImage && <span className="poster-artwork">{movie.art === "ramayana" ? <><i className="ramayana-sun" /><i className="ramayana-figure" /><i className="ramayana-bow" /></> : movie.art === "jailer" ? <><i className="jailer-light" /><i className="jailer-figure" /></> : movie.art === "storm" ? <><i className="storm-moon" /><i className="storm-ridge" /></> : <><i className="signal-planet" /><i className="signal-beam" /></>}</span>}
     <span className="poster-bottom"><small>{movie.genre.toUpperCase()}</small><strong>{movie.title}</strong><span>{movie.language}</span></span>
   </div>;
 }
