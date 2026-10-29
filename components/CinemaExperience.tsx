@@ -7,6 +7,21 @@ import { Suspense, useMemo, useRef, useState } from "react";
 type SeatState = "available" | "selected" | "booked";
 type SeatData = { id: string; x: number; z: number; state: SeatState };
 
+function getYouTubeEmbedUrl(rawUrl: string) {
+  try {
+    const url = new URL(rawUrl);
+    let videoId = "";
+    if (url.hostname === "youtu.be") videoId = url.pathname.slice(1);
+    else if (url.hostname.endsWith("youtube.com")) {
+      if (url.pathname === "/watch") videoId = url.searchParams.get("v") ?? "";
+      else if (url.pathname.startsWith("/embed/") || url.pathname.startsWith("/shorts/")) videoId = url.pathname.split("/")[2] ?? "";
+    }
+    return videoId ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&mute=1&controls=1&rel=0&playsinline=1` : null;
+  } catch {
+    return null;
+  }
+}
+
 function Seat({ seat, onSelect }: { seat: SeatData; onSelect: (id: string) => void }) {
   const color = seat.state === "selected" ? "#e9b85c" : seat.state === "booked" ? "#633b45" : "#287b68";
   return <group position={[seat.x, 0.22 + Math.max(0, -seat.z) * .02, seat.z]} onClick={(e) => { e.stopPropagation(); if (seat.state !== "booked") onSelect(seat.id); }}>
@@ -41,7 +56,11 @@ function Auditorium({ selected, setSelected }: { selected: string[]; setSelected
     <mesh position={[0,2.3,-.84]}><planeGeometry args={[7.2,2.95]} /><meshBasicMaterial color="#202b3c" /></mesh>
     <Html position={[0,2.25,-.79]} center transform distanceFactor={5.8} style={{pointerEvents:"auto"}}>
       {process.env.NEXT_PUBLIC_TRAILER_URL ? (
-        <video className="trailer-video" src={process.env.NEXT_PUBLIC_TRAILER_URL} autoPlay muted loop playsInline controls preload="metadata" aria-label="Movie trailer playing on the cinema screen" />
+        getYouTubeEmbedUrl(process.env.NEXT_PUBLIC_TRAILER_URL) ? (
+          <iframe className="trailer-video" src={getYouTubeEmbedUrl(process.env.NEXT_PUBLIC_TRAILER_URL)!} title="Movie trailer" allow="autoplay; encrypted-media; picture-in-picture" allowFullScreen />
+        ) : (
+          <video className="trailer-video" src={process.env.NEXT_PUBLIC_TRAILER_URL} autoPlay muted loop playsInline controls preload="metadata" aria-label="Movie trailer playing on the cinema screen" />
+        )
       ) : (
         <div className="trailer-screen"><span className="trailer-stars">✦ C I N E V E R S E</span><strong className="trailer-title">THE SHOW<br/>BEGINS HERE</strong><span className="trailer-sub">ADD A TRAILER URL TO ENABLE PLAYBACK</span></div>
       )}
