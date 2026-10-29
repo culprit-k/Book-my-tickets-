@@ -16,11 +16,11 @@ export default function Home() {
 
     <section className="hero" id="top">
       <div className="hero-copy">
-        <div className="eyebrow"><span className="live-dot" /> A NEW WAY TO GO TO THE MOVIES</div>
-        <h1>Don’t just watch.<br /><em>Step inside.</em></h1>
-        <p>Explore the theatre in 3D. Find your perfect view. Choose your seats while the big screen takes centre stage.</p>
+        <div className="eyebrow"><span className="live-dot" /> YOUR NEXT MOVIE NIGHT, REIMAGINED</div>
+        <h1>The cinema.<br /><em>Beyond the screen.</em></h1>
+        <p>Walk through a cinematic auditorium in real time. Explore the room from every angle, compare premium seats, and shape your perfect movie night.</p>
         <a className="primary-button" href="#experience">Explore the cinema <span>↗</span></a>
-        <div className="hero-meta"><span>✦ IMMERSIVE 3D</span><span>✦ INTERACTIVE SEATS</span><span>✦ CINEMATIC DESIGN</span></div>
+        <div className="hero-meta"><span>✦ REAL-TIME 3D</span><span>✦ INTERACTIVE SEATS</span><span>✦ PREMIUM AUDITORIUM</span></div>
       </div>
       <div className="hero-art" aria-label="Illustration of a cinematic auditorium">
         <div className="hero-glow" /><div className="hero-screen"><div className="screen-caption">YOUR NEXT MOVIE NIGHT<br /><b>STARTS HERE.</b></div></div>
@@ -29,13 +29,13 @@ export default function Home() {
       </div>
     </section>
 
-    <section className="section-head" id="movies"><div><span className="section-kicker">NOW SHOWING · CONCEPT LINEUP</span><h2>Pick your next <em>escape.</em></h2></div><span className="section-note">Select a film, then explore its theatre.</span></section>
+    <section className="section-head" id="movies"><div><span className="section-kicker">THE CINEVERSE SELECTION</span><h2>Pick your next <em>escape.</em></h2></div><span className="section-note">Discover the mood. Explore the room. Find your view.</span></section>
     <section className="movie-strip">
       {films.map((film,i)=><article className="movie-card" key={film.title}><a href="#experience" className={`poster ${film.cls}`}><span className="poster-tag">{film.badge}</span><span className="poster-title">{film.art}</span><span className="poster-cta">EXPLORE FILM ↗</span></a><div className="movie-info"><div><h3>{film.title}</h3><p>{film.genre}</p></div>{i===0?<span className="rating">DEMO</span>:<span className="rating">★ {film.badge}</span>}</div></article>)}
     </section>
 
     <section className="experience-section" id="experience">
-      <div className="experience-heading"><div><span className="section-kicker">THE MAIN EVENT</span><h2>Your seat. Your angle. <em>Your cinema.</em></h2></div><p>Drag to orbit · Scroll to zoom · Click a seat to select it</p></div>
+      <div className="experience-heading"><div><span className="section-kicker">THE MAIN EVENT</span><h2>A whole auditorium. <em>At your fingertips.</em></h2></div><p>Orbit the room, inspect the tiers, and select seats directly in the 3D scene</p></div>
       <CinemaExperience />
     </section>
 
