@@ -39,8 +39,12 @@ function Auditorium({ selected, setSelected }: { selected: string[]; setSelected
     <mesh position={[0,2.25,-1]}><boxGeometry args={[8.3,4.2,.22]} /><meshStandardMaterial color="#29272b" /></mesh>
     <mesh position={[0,2.3,-.86]}><planeGeometry args={[7.4,3.15]} /><meshBasicMaterial color="#151d2b" /></mesh>
     <mesh position={[0,2.3,-.84]}><planeGeometry args={[7.2,2.95]} /><meshBasicMaterial color="#202b3c" /></mesh>
-    <Html position={[0,2.25,-.79]} center transform distanceFactor={5.8} style={{pointerEvents:"none"}}>
-      <div className="trailer-screen"><span className="trailer-stars">✦ C I N E V E R S E</span><strong className="trailer-title">THE SHOW<br/>BEGINS HERE</strong><span className="trailer-sub">CINEMA SCREEN · VISUAL PLACEHOLDER</span></div>
+    <Html position={[0,2.25,-.79]} center transform distanceFactor={5.8} style={{pointerEvents:"auto"}}>
+      {process.env.NEXT_PUBLIC_TRAILER_URL ? (
+        <video className="trailer-video" src={process.env.NEXT_PUBLIC_TRAILER_URL} autoPlay muted loop playsInline controls preload="metadata" aria-label="Movie trailer playing on the cinema screen" />
+      ) : (
+        <div className="trailer-screen"><span className="trailer-stars">✦ C I N E V E R S E</span><strong className="trailer-title">THE SHOW<br/>BEGINS HERE</strong><span className="trailer-sub">ADD A TRAILER URL TO ENABLE PLAYBACK</span></div>
+      )}
     </Html>
     {seats.map(seat => <Seat key={seat.id} seat={seat} onSelect={select} />)}
     <mesh position={[0,.03,.25]} rotation={[-Math.PI/2,0,0]}><planeGeometry args={[8.2,.45]} /><meshStandardMaterial color="#38313a" /></mesh>
