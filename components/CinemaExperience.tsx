@@ -162,27 +162,6 @@ function getYouTubeEmbedUrl(rawUrl: string, muted: boolean) {
   } catch { return null; }
 }
 
-function Seat({ seat, onSelect }: { seat: SeatData; onSelect: (id: string) => void }) {
-  const color = seat.state === "selected" ? "#f3c66f" : seat.state === "booked" ? "#542f39" : seat.row < 3 ? "#20805e" : seat.row < 8 ? "#286db1" : seat.row < 10 ? "#7452b8" : "#8f632a";
-  const glow = seat.state === "selected" ? "#b37d2d" : "#000000";
-  return <group position={[seat.x, .18 + seat.row * .105, seat.z]} onClick={(e) => { e.stopPropagation(); if (seat.state !== "booked") onSelect(seat.id); }}>
-    {/* Upholstered seat base and padded back */}
-    <RoundedBox position={[0, .08, 0]} args={[.39, .14, .36]} radius={.055} smoothness={4} castShadow receiveShadow><meshStandardMaterial color={color} roughness={.58} metalness={.02} emissive={glow} emissiveIntensity={seat.state === "selected" ? .38 : .015} /></RoundedBox>
-    <RoundedBox position={[0, .29, -.125]} args={[.39, .35, .11]} radius={.055} smoothness={5} castShadow><meshStandardMaterial color={color} roughness={.62} metalness={.015} emissive={glow} emissiveIntensity={seat.state === "selected" ? .3 : .01} /></RoundedBox>
-    <RoundedBox position={[-.2, .13, .005]} args={[.07, .17, .3]} radius={.025} smoothness={3} castShadow><meshStandardMaterial color="#252831" roughness={.3} metalness={.48} /></RoundedBox>
-    <RoundedBox position={[.2, .13, .005]} args={[.07, .17, .3]} radius={.025} smoothness={3} castShadow><meshStandardMaterial color="#252831" roughness={.3} metalness={.48} /></RoundedBox>
-    <mesh position={[.19, .22, -.045]}><cylinderGeometry args={[.026, .026, .035, 12]} /><meshStandardMaterial color="#b98d4d" metalness={.8} roughness={.2} /></mesh>
-    <mesh position={[0, .018, .12]}><boxGeometry args={[.24, .025, .045]} /><meshStandardMaterial color="#30333b" metalness={.35} roughness={.45} /></mesh>
-  </group>;
-}
-
-function WallPanel({ position, rotation = 0 }: { position: [number, number, number]; rotation?: number }) {
-  return <group position={position} rotation={[0, rotation, 0]}>
-    <mesh><boxGeometry args={[.72, 1.35, .07]} /><meshStandardMaterial color="#20232c" roughness={.85} /></mesh>
-    <mesh position={[0, 0, .043]}><boxGeometry args={[.045, 1.1, .018]} /><meshStandardMaterial color="#b78a43" emissive="#6b4219" emissiveIntensity={.65} metalness={.6} /></mesh>
-  </group>;
-}
-
 function Auditorium({ seats, onSelect, trailerUrl, filmTitle, houseLights, iframeRef, videoRef, muted }: {
   seats: SeatData[]; onSelect: (id: string) => void; trailerUrl: string; filmTitle: string; houseLights: boolean;
   iframeRef: React.RefObject<HTMLIFrameElement | null>; videoRef: React.RefObject<HTMLVideoElement | null>; muted: boolean;
