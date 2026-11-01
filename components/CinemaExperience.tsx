@@ -149,16 +149,16 @@ function RibbedWall({ side }: { side: -1 | 1 }) {
   </group>;
 }
 
-function getYouTubeEmbedUrl(rawUrl: string) {
+function getYouTubeEmbedUrl(rawUrl: string, muted: boolean) {
   try {
     const url = new URL(rawUrl);
     let videoId = "";
     if (url.hostname === "youtu.be") videoId = url.pathname.slice(1);
-    else if (url.hostname.endsWith("youtube.com")) {
+    else if (url.hostname.endsWith("youtube.com") || url.hostname.endsWith("youtube-nocookie.com")) {
       if (url.pathname === "/watch") videoId = url.searchParams.get("v") ?? "";
       else if (url.pathname.startsWith("/embed/") || url.pathname.startsWith("/shorts/")) videoId = url.pathname.split("/")[2] ?? "";
     }
-    return videoId ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&mute=1&controls=1&rel=0&playsinline=1&loop=1&playlist=${encodeURIComponent(videoId)}&modestbranding=1` : null;
+    return videoId ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&mute=${muted ? 1 : 0}&controls=0&enablejsapi=1&rel=0&playsinline=1&loop=1&playlist=${encodeURIComponent(videoId)}&modestbranding=1` : null;
   } catch { return null; }
 }
 
@@ -356,7 +356,7 @@ export default function CinemaExperience({ onCheckout, onChangeVideo, trailerUrl
     controls.current.target.set(...value.target);
     controls.current.update();
   };
-  const zoom = (factor: number) => { if (controls.current) { controls.current.object.position.multiplyScalar(factor); controls.current.update(); } };
+  const zoom = (factor: number) => { if (controls.current) { controls.current.object.position.sub(controls.current.target).multiplyScalar(factor).add(controls.current.target); controls.current.update(); } };
 
   return <div className="cinema-layout reference-cinema-layout">
     <div className="scene-wrap reference-scene-wrap">
