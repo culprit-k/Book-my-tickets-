@@ -158,7 +158,7 @@ function getYouTubeEmbedUrl(rawUrl: string, muted: boolean) {
       if (url.pathname === "/watch") videoId = url.searchParams.get("v") ?? "";
       else if (url.pathname.startsWith("/embed/") || url.pathname.startsWith("/shorts/")) videoId = url.pathname.split("/")[2] ?? "";
     }
-    return videoId ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&mute=${muted ? 1 : 0}&controls=0&enablejsapi=1&rel=0&playsinline=1&loop=1&playlist=${encodeURIComponent(videoId)}&modestbranding=1` : null;
+    return videoId ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&mute=${muted ? 1 : 0}&controls=1&enablejsapi=1&rel=0&playsinline=1&loop=1&playlist=${encodeURIComponent(videoId)}&modestbranding=1` : null;
   } catch { return null; }
 }
 
@@ -348,7 +348,7 @@ export default function CinemaExperience({ onCheckout, onChangeVideo, trailerUrl
       {mode === "3D" ? <>
         <Canvas shadows camera={{ position: [-11.5, 8.4, 13.5], fov: 43, near: 0.1, far: 80 }} dpr={hdMode ? [1.2, 1.65] : [0.8, 1.1]}>
           <Suspense fallback={null}><Auditorium seats={seats} onSelect={toggleSeat} trailerUrl={trailerUrl} filmTitle={movieTitle} houseLights={houseLights} iframeRef={iframeRef} videoRef={videoRef} muted={muted} /></Suspense>
-          <OrbitControls ref={controls} makeDefault target={[0, 3.5, 2.2]} minDistance={4.2} maxDistance={23} maxPolarAngle={Math.PI / 2.12} minPolarAngle={0.12} enablePan={false} enableDamping dampingFactor={0.075} autoRotate={view === "Tour"} autoRotateSpeed={0.28} />
+          <OrbitControls ref={controls} makeDefault target={[0, 3.5, 2.2]} minDistance={4.2} maxDistance={14.5} minAzimuthAngle={-Math.PI * 0.42} maxAzimuthAngle={Math.PI * 0.42} maxPolarAngle={Math.PI / 2.18} minPolarAngle={0.18} enablePan={false} enableDamping dampingFactor={0.075} autoRotate={view === "Tour"} autoRotateSpeed={0.16} />
         </Canvas>
         <div className="reference-scene-tools">
           <button title="Reset camera" onClick={() => setCamera("Overview")}>⌂</button>
