@@ -257,8 +257,6 @@ function Auditorium({ seats, onSelect, trailerUrl, filmTitle, houseLights, ifram
   </group>;
 }
 
-const showtimes = ["10:30 AM", "1:45 PM", "5:20 PM", "8:50 PM"];
-
 function TwoDSeatMap({ seats, onSelect }: { seats: SeatData[]; onSelect: (id: string) => void }) {
   const available = seats.filter(seat => seat.state === "available").length;
   const rows = Array.from({ length: ROWS }, (_, index) => seats.filter(seat => seat.row === index + 1));
