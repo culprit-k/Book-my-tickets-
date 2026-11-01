@@ -158,7 +158,7 @@ function getYouTubeEmbedUrl(rawUrl: string, muted: boolean) {
       if (url.pathname === "/watch") videoId = url.searchParams.get("v") ?? "";
       else if (url.pathname.startsWith("/embed/") || url.pathname.startsWith("/shorts/")) videoId = url.pathname.split("/")[2] ?? "";
     }
-    return videoId ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&mute=${muted ? 1 : 0}&controls=1&enablejsapi=1&rel=0&playsinline=1&loop=1&playlist=${encodeURIComponent(videoId)}&modestbranding=1` : null;
+    return videoId ? `https://www.youtube-nocookie.com/embed/${encodeURIComponent(videoId)}?autoplay=1&mute=${muted ? 1 : 0}&controls=1&enablejsapi=1&origin=${encodeURIComponent(typeof window !== "undefined" ? window.location.origin : "https://book-my-tickets-app-abhijith14.vercel.app")}&rel=0&playsinline=1&loop=1&playlist=${encodeURIComponent(videoId)}&modestbranding=1` : null;
   } catch { return null; }
 }
 
@@ -197,7 +197,7 @@ function Auditorium({ seats, onSelect, trailerUrl, filmTitle, houseLights, ifram
     <mesh position={[0, 4.45, -9.20]} castShadow><boxGeometry args={[12.1, 6.95, 0.52]} /><meshStandardMaterial color="#3b3438" metalness={0.48} roughness={0.33} /></mesh>
     <mesh position={[0, 4.45, -8.91]}><boxGeometry args={[11.76, 6.62, 0.08]} /><meshStandardMaterial color="#d5b36f" emissive="#765226" emissiveIntensity={0.8} metalness={0.58} roughness={0.26} /></mesh>
     <mesh position={[0, 4.45, -8.855]}><planeGeometry args={[11.48, 6.45]} /><meshBasicMaterial color="#080a10" /></mesh>
-    <Html position={[0, 4.45, -8.80]} center transform distanceFactor={10} zIndexRange={[40, 0]} style={{ pointerEvents: "auto" }}>
+    <Html position={[0, 4.45, -8.80]} center transform distanceFactor={100} zIndexRange={[40, 0]} style={{ pointerEvents: "auto" }}>
       {trailerEmbed
         ? <iframe ref={iframeRef} className="trailer-video" src={trailerEmbed} title={filmTitle + " trailer on the theatre screen"} allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen />
         : <video ref={videoRef} className="trailer-video" src={trailerUrl} autoPlay muted={muted} loop playsInline controls preload="metadata" aria-label={filmTitle + " trailer on the theatre screen"} />}
