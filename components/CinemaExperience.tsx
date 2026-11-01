@@ -197,7 +197,7 @@ function Auditorium({ seats, onSelect, trailerUrl, filmTitle, houseLights, ifram
     <mesh position={[0, 4.45, -9.20]} castShadow><boxGeometry args={[12.1, 6.95, 0.52]} /><meshStandardMaterial color="#3b3438" metalness={0.48} roughness={0.33} /></mesh>
     <mesh position={[0, 4.45, -8.91]}><boxGeometry args={[11.76, 6.62, 0.08]} /><meshStandardMaterial color="#d5b36f" emissive="#765226" emissiveIntensity={0.8} metalness={0.58} roughness={0.26} /></mesh>
     <mesh position={[0, 4.45, -8.855]}><planeGeometry args={[11.48, 6.45]} /><meshBasicMaterial color="#080a10" /></mesh>
-    <Html position={[0, 4.45, -8.80]} center transform distanceFactor={5.7} style={{ pointerEvents: "auto" }}>
+    <Html position={[0, 4.45, -8.80]} center transform distanceFactor={10} zIndexRange={[40, 0]} style={{ pointerEvents: "auto" }}>
       {trailerEmbed
         ? <iframe ref={iframeRef} className="trailer-video" src={trailerEmbed} title={filmTitle + " trailer on the theatre screen"} allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen />
         : <video ref={videoRef} className="trailer-video" src={trailerUrl} autoPlay muted={muted} loop playsInline controls preload="metadata" aria-label={filmTitle + " trailer on the theatre screen"} />}
@@ -322,11 +322,11 @@ export default function CinemaExperience({ onCheckout, onChangeVideo, trailerUrl
     setView(preset);
     if (!controls.current) return;
     const presets: Record<string, { position: [number, number, number]; target: [number, number, number] }> = {
-      "Overview": { position: [-13, 9.5, 16.5], target: [0, 3.5, 2.2] },
-      "Near screen": { position: [0, 5.8, -2.3], target: [0, 3.6, 4.8] },
-      "Balcony": { position: [0, 10.8, 14.5], target: [0, 2.8, 2.2] },
-      "Top view": { position: [0, 22, 4], target: [0, 0.2, 3.5] },
-      "Tour": { position: [13.5, 9.2, 15.5], target: [0, 3.4, 2.0] },
+      "Overview": { position: [-11.5, 8.4, 13.5], target: [0, 3.5, 2.2] },
+      "Near screen": { position: [0, 5.6, -1.6], target: [0, 3.8, 1.8] },
+      "Balcony": { position: [0, 9.4, 12.2], target: [0, 3.0, 3.0] },
+      "Top view": { position: [0, 18.5, 3.8], target: [0, 0.2, 3.5] },
+      "Tour": { position: [11.5, 8.4, 13.5], target: [0, 3.4, 2.0] },
     };
     const value = presets[preset];
     controls.current.object.position.set(...value.position);
@@ -346,9 +346,9 @@ export default function CinemaExperience({ onCheckout, onChangeVideo, trailerUrl
         <span className="reference-mode-live">{mode === "3D" ? "LIVE 3D" : "SEAT MAP"}</span>
       </div>
       {mode === "3D" ? <>
-        <Canvas shadows camera={{ position: [-13, 9.5, 16.5], fov: 43 }} dpr={hdMode ? [1.2, 1.65] : [0.8, 1.1]}>
+        <Canvas shadows camera={{ position: [-11.5, 8.4, 13.5], fov: 43, near: 0.1, far: 80 }} dpr={hdMode ? [1.2, 1.65] : [0.8, 1.1]}>
           <Suspense fallback={null}><Auditorium seats={seats} onSelect={toggleSeat} trailerUrl={trailerUrl} filmTitle={movieTitle} houseLights={houseLights} iframeRef={iframeRef} videoRef={videoRef} muted={muted} /></Suspense>
-          <OrbitControls ref={controls} makeDefault target={[0, 3.5, 2.2]} minDistance={5} maxDistance={34} maxPolarAngle={Math.PI / 2.02} minPolarAngle={0.035} enableDamping dampingFactor={0.075} autoRotate={view === "Tour"} autoRotateSpeed={0.28} />
+          <OrbitControls ref={controls} makeDefault target={[0, 3.5, 2.2]} minDistance={4.2} maxDistance={23} maxPolarAngle={Math.PI / 2.12} minPolarAngle={0.12} enablePan={false} enableDamping dampingFactor={0.075} autoRotate={view === "Tour"} autoRotateSpeed={0.28} />
         </Canvas>
         <div className="reference-scene-tools">
           <button title="Reset camera" onClick={() => setCamera("Overview")}>⌂</button>
